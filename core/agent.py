@@ -10,8 +10,6 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Protocol, runtime_checkable
 
-from pydantic import ValidationError
-
 from core.models import AgentResult, TaskRecord
 
 
@@ -64,11 +62,7 @@ class BaseAgent(ABC):
         if not isinstance(result, AgentResult):
             raise TypeError("agent_result_contract_violation")
         if result.agent_name != self.name:
-            raise ValidationError.from_exception_data(
-                "AgentResult", [{"type": "value_error", "loc": ("agent_name",),
-                                 "input": result.agent_name, "ctx": {"error": ValueError(
-                                     "agent_identity_mismatch")}}]
-            )
+            raise ValueError("agent_identity_mismatch")
         return result
 
     @abstractmethod
