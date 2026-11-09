@@ -1,5 +1,7 @@
 """FastAPI app factory and task submission endpoint."""
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+from typing import cast
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -63,7 +65,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     auth = APIKeyAuthenticator(list(config.api_keys))
 
     @asynccontextmanager
-    async def lifespan(app: FastAPI):
+    async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await initialize_schema(engine)
         yield
         await engine.dispose()
@@ -91,7 +93,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         dependencies=[Depends(require_api_key)],
     )
     async def submit_task(payload: TaskRequest, request: Request) -> TaskRecord:
-        return await request.app.state.orchestrator.submit(payload)
+        orchestrator = cast(Orchestrator, request.app.state.orchestrator)
+        return await orchestrator.submit(payload)
 
     return app
 
