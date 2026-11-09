@@ -11,4 +11,4 @@ class SecurityGuardAgent:
         return AgentResult(agent_name=self.name, output={
             "sensitive_field_names_detected": flagged,
             "recommendation": "Never place credentials or authentication secrets in task payloads.",
-            "secret_scanning": "not_implemented"})
+            "credential_value_scan_status": "not_implemented"})
