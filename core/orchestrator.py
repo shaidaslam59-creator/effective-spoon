@@ -13,7 +13,7 @@ from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import Any
 
-from core.agent import Agent, AgentContext
+from core.agent import AgentContext
 from core.event_bus import EventBus
 from core.models import AgentResult, TaskRecord, TaskRequest, TaskStatus
 from core.policy import DispatchPolicy
