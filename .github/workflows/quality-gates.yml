@@ -42,6 +42,12 @@ jobs:
         run: python -m pytest -q
       - name: Ruff lint
         run: ruff check .
+      - name: Static type check
+        run: mypy core agents persistence security api
+      - name: Security lint
+        run: bandit -r core agents persistence security api
+      - name: Dependency vulnerability audit
+        run: pip-audit
       - name: Build wheel and source distribution
         run: python -m build
       - name: Verify distribution archives
