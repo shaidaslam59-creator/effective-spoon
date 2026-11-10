@@ -11,5 +11,6 @@ class SecurityGuardAgent:
         return AgentResult(agent_name=self.name, output={
             "sensitive_field_names_detected": flagged,
             "recommendation": "Never place credentials or authentication secrets in task payloads.",
-            "secret_scanning": "not_implemented",  # nosec B105 - capability status, not a credential
+            # This is a capability-status marker, not a credential.
+            "secret_scanning": "not_implemented",  # nosec B105
         })
