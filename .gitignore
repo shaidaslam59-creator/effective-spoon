@@ -21,3 +21,26 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+# Python runtime and build output
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+*.db
+*.sqlite
+*.sqlite3
+
+# Local environment files; keep sanitized examples trackable
+.env
+.env.*
+!.env.example
