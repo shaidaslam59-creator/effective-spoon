@@ -126,6 +126,7 @@ class Orchestrator:
                 return task
 
             await self._publish("task.started", task_id=str(task.id), agent=agent.name)
+            terminal_persisted = False
             try:
                 async with asyncio.timeout(self.timeout_seconds):
                     result: AgentResult = await agent.execute(
@@ -151,6 +152,7 @@ class Orchestrator:
                 task.finished_at = datetime.now(UTC)
                 try:
                     await asyncio.shield(self._persist(task))
+                    terminal_persisted = True
                 except Exception:
                     logger.exception("cancelled_task_persistence_failed",
                                      extra={"task_id": str(task.id)})
@@ -163,14 +165,15 @@ class Orchestrator:
                 await self._publish("task.failed", task_id=str(task.id), reason=task.error_code)
             finally:
                 task.finished_at = task.finished_at or datetime.now(UTC)
-                try:
-                    await self._persist(task)
-                except Exception:
-                    logger.exception("terminal_task_persistence_failed",
-                                     extra={"task_id": str(task.id)})
-                    if task.status is TaskStatus.SUCCEEDED:
-                        task.status = TaskStatus.FAILED
-                        task.error_code = "terminal_persistence_failed"
+                if not terminal_persisted:
+                    try:
+                        await self._persist(task)
+                    except Exception:
+                        logger.exception("terminal_task_persistence_failed",
+                                         extra={"task_id": str(task.id)})
+                        if task.status is TaskStatus.SUCCEEDED:
+                            task.status = TaskStatus.FAILED
+                            task.error_code = "terminal_persistence_failed"
         return task
 
     async def _reject(self, task: TaskRecord, reason: str) -> TaskRecord:
