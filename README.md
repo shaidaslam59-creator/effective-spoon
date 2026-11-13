@@ -16,7 +16,12 @@ uvicorn api.application:app --host 127.0.0.1 --port 8000
 
 Authenticated routes require `X-API-Key`. Health is available at `GET /health`; submit work with `POST /v1/tasks`.
 
-Environment settings use the `OMNISPHERE_` prefix: `DATABASE_URL` (default SQLite async URL), `API_KEYS` (comma-separated), `MAX_CONCURRENT_TASKS` (8), and `TASK_TIMEOUT_SECONDS` (120).
+Configure these exact environment variables:
+
+- `OMNISPHERE_DATABASE_URL`: database URL; defaults to `sqlite+aiosqlite:///./omnisphere.db`.
+- `OMNISPHERE_API_KEYS`: comma-separated API keys; configure at least one key to enable authenticated task submission.
+- `OMNISPHERE_MAX_CONCURRENT_TASKS`: maximum concurrent tasks; defaults to `8`.
+- `OMNISPHERE_TASK_TIMEOUT_SECONDS`: task execution timeout in seconds; defaults to `120`.
 
 ## Boundaries
 
